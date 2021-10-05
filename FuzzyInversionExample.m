@@ -2,12 +2,13 @@
 clc; clear variables; close all
 
 %% Generate data
-DGM_type=1;
+DGM_type=4;
 KernelType= 'rbf';
-Sigma=[8 0.4;0.4 1];
+Sigma=[1 0;0 1];
 N=5000;
 rng default %  for reproducibility
-X = mvnrnd([0,0], Sigma, N);
+XXX = mvnrnd([0,0], Sigma, N);
+X = XXX;
 if DGM_type==1 % parabola data
     X(:,2)=X(:,1).^2+X(:,2);
 elseif DGM_type==2 %  Two moons data
@@ -15,6 +16,8 @@ elseif DGM_type==2 %  Two moons data
 elseif DGM_type==3 % Signature ?
     X(:,2)=X(:,1).^2+X(:,2);
     X(N/2+1:end,2)=-(X(N/2+1:end,1)) ;
+elseif DGM_type==4 % simple
+    X = abs(X);
 end
 
 Y = ones(1,size(X,1));
@@ -48,7 +51,7 @@ if  size(X,2)==2
     EpsMatUpper=zeros(Nxmesh,Nymesh);
 end
 %%
-make_plots = false;
+make_plots = true;
 
 i = 1;
 alpha(i) = 0;
@@ -56,7 +59,8 @@ while alpha(i) < 0.95
 
     SVMModel = fitcsvm(X_fake2class,Y_fake2class,'KernelFunction',KernelType,'KernelScale','auto',...
         'BoxConstraint',1,'Verbose',1);
-    
+    %SVMModel = fitcsvm(X ,Y ,'KernelFunction',KernelType,'KernelScale','auto',...
+    %    'Verbose',1);
     Nsv(i)=sum(SVMModel.IsSupportVector(1:N_tmp));
     
     Beta=10^-4;
@@ -133,12 +137,20 @@ elseif DGM_type==2 %  Two moons data
 elseif DGM_type==3 % Signature ?
     XX(:,2)=XX(:,1).^2+XX(:,2);
     XX(N/2+1:end,2)=-(XX(N/2+1:end,1));
+elseif DGM_type==4 % simple
+    XX = abs(XX);
 end
 
 for i = 1:length(SVM_save)
     [inside,~] = SVM_save{i}.predict(XX);
     Membership_values(inside == 1) = alpha(i);
 end
+
+figure()
+contourf(x,y,reshape(Membership_values, Nxmesh, Nymesh),'ShowText','on')
+hold on
+scatter(XXX(:,1), XXX(:,2), 'r')
+
 
 figure()
 contourf(x,y,reshape(Membership_values, Nxmesh, Nymesh),'ShowText','on')
