@@ -105,9 +105,10 @@ hold on
 hold on
 scatter(X(:,1),X(:,2)), 
 hold on, 
-for i=1:length(supports)
-scatter(X(supports(i),1),X(supports(i),2),'r')
-end
+scatter(X(supports,1),X(supports,2),'r') 
+%for i=1:length(supports)
+%scatter(X(supports(i),1),X(supports(i),2),'r')
+%end
 axis equal
 
 
