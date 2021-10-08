@@ -27,13 +27,13 @@ load('X')
 %         H(i,j)=X(i,:)*X(j,:)';
 %     end
 % end
-X_X = zeros(N,N);
-for i = 1:N
-    for j = 1:N
-        X_X(i,j)=(X(i,:) - X(j,:))*(X(i,:) - X(j,:))';
-    end
-end
-
+%X_X = zeros(N,N);
+%for i = 1:N
+%    for j = 1:N
+%        X_X(i,j)=(X(i,:) - X(j,:))*(X(i,:) - X(j,:))';
+%    end
+%end
+X_X=pdist2(X,X); % fast computation of matrix of squared eucledian distances
 %%
 
 gamma=0.01;
@@ -71,9 +71,10 @@ figure,
 hold on
 scatter(X(:,1),X(:,2)), 
 hold on, 
-for i=1:length(supports)
-scatter(X(supports(i),1),X(supports(i),2),'r')
-end
+scatter(X(supports,1),X(supports,2),'r')
+% for i=1:length(supports)
+%  scatter(X(supports(i),1),X(supports(i),2),'r')
+% end
 axis equal
 %% KERNEL
 R2 =  1/2 * alp'*H*alp - alp'*f
