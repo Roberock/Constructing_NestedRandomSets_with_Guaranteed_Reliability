@@ -33,7 +33,7 @@ load('X')
 %        X_X(i,j)=(X(i,:) - X(j,:))*(X(i,:) - X(j,:))';
 %    end
 %end
-X_X=pdist2(X,X).^2; % fast computation of matrix of squared eucledian distances
+X_X=pdist2(X,X,'squaredeuclidean'); % fast computation of matrix of squared eucledian distances
 %%
 
 gamma=0.01;
