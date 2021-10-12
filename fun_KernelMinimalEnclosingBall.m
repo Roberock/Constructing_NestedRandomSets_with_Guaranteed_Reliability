@@ -50,13 +50,17 @@ supports = find(abs(alp)>tol);
 %% Function handles for the decision boundary
 
 k_x = @(x) exp(-sum((X-x)'.^2)'/sigma^2);
+k_XX = @(xx) exp(-pdist2(X,xx,'squaredeuclidean')/sigma^2);
 % k_xx= @(x,y) exp(-gamma*sum((x-y)'.^2)); 
 f_x = @(x) 1 - 2*k_x(x)'*alp - alp'*f + 2 * alp'*K*alp;
-i_x = @(x) f_x(X(supports(1),:)) > f_x(x);
+f_XX = @(xx) 1 - 2*k_XX(xx)'*alp - alp'*f + 2 * alp'*K*alp;
+% i_x = @(x) f_x(X(supports(1),:)) > f_x(x);
+i_XX = @(xx) f_x(X(supports(1),:)) > f_XX(xx);
+
 
 %% Outputs
 outputArg1 = supports;
-outputArg2 = f_x;
-outputArg3 = i_x;
+outputArg2 = f_XX;
+outputArg3 = i_XX;
 end
 
